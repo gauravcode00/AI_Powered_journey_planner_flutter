@@ -23,23 +23,17 @@ Core Features
 Tech Stack
 This project was built using a modern, scalable, and secure technology stack.
 
-Frontend (Mobile App):
+Frontend (Mobile App): Flutter
 
-Flutter
-
-Backend (Server):
-
-Spring Boot (Java)
+Backend (Server): Spring Boot (Java)
 
 Cloud Services & APIs:
+    Deployment: Google Cloud Run
+    AI Model: Google Gemini API
+    Mapping & Location: Google Maps Platform (Maps SDK, Directions API, Places API)
+    Database: Shared Preferences (for local on-device storage)
 
-Deployment: Google Cloud Run
 
-AI Model: Google Gemini API
-
-Mapping & Location: Google Maps Platform (Maps SDK, Directions API, Places API)
-
-Database: Shared Preferences (for local on-device storage)
 
 ## Screenshots
 
