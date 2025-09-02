@@ -29,8 +29,11 @@ Backend (Server): Spring Boot (Java)
 
 Cloud Services & APIs:
     Deployment: Google Cloud Run
+    
     AI Model: Google Gemini API
+    
     Mapping & Location: Google Maps Platform (Maps SDK, Directions API, Places API)
+    
     Database: Shared Preferences (for local on-device storage)
 
 
