@@ -28,13 +28,14 @@ Frontend (Mobile App): Flutter
 Backend (Server): Spring Boot (Java)
 
 Cloud Services & APIs:
-    Deployment: Google Cloud Run
+
+Deployment: Google Cloud Run
     
-    AI Model: Google Gemini API
+AI Model: Google Gemini API
     
-    Mapping & Location: Google Maps Platform (Maps SDK, Directions API, Places API)
+Mapping & Location: Google Maps Platform (Maps SDK, Directions API, Places API)
     
-    Database: Shared Preferences (for local on-device storage)
+Database: Shared Preferences (for local on-device storage)
 
 
 
