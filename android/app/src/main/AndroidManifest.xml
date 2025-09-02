@@ -36,8 +36,19 @@
             android:value="2" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value=""/>  <!--google maps api-->
+            android:value="AIzaSyCFowPqRVxCmkzbqdAvSSGKnLfLDxNRF3E"/>  <!--google maps api-->
     </application>
+    <queries>
+        <!-- If you want to launch a URL in a browser -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <!-- If you want to launch a URL in an in-app browser -->
+        <intent>
+            <action android:name="android.support.customtabs.action.CustomTabsService" />
+        </intent>
+    </queries>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
          https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.

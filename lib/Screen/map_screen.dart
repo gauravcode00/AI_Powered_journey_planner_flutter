@@ -1,11 +1,8 @@
-// --- Main Map Screen Widget ---
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:journey_planner/main.dart';
-import 'package:journey_planner/widgets/journey_planner_sheet.dart';
-import 'package:journey_planner/widgets/top_search_bar.dart';
+import '../widgets/journey_planner_sheet.dart';
+import '../widgets/top_search_bar.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -17,14 +14,13 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   GoogleMapController? _mapController;
   static const CameraPosition _initialPosition = CameraPosition(
-    target: LatLng(20.5937, 78.9629), // Center of India
+    target: LatLng(20.5937, 78.9629),
     zoom: 4.5,
   );
 
   @override
   void initState() {
     super.initState();
-    // Try to get the user's location when the app starts
     _goToMyLocation();
   }
 
@@ -37,44 +33,59 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  // MODIFIED: Re-introduced a robust "Go To My Location" function
+  // MODIFIED: This function now shows a dialog if location services are disabled.
   Future<void> _goToMyLocation() async {
-    try {
-      // Step 1: Check if location services are enabled.
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Location services are disabled. Please enable them.')));
-        return;
+    // 1. Check if location services are enabled
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // If services are disabled, show a dialog to the user
+      if (mounted) { // Check if the widget is still in the tree
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Location Services Disabled'),
+              content: const Text('Please enable location services to use this feature.'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text('Open Settings'),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    // This opens the device's location settings
+                    await Geolocator.openLocationSettings();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       }
+      return; // Exit the function if services were not enabled
+    }
 
-      // Step 2: Check for location permissions.
+    // 2. If services are enabled, proceed with permission checks
+    try {
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Location permissions are denied.')));
-          return;
-        }
+        if (permission == LocationPermission.denied) return;
       }
-      if (permission == LocationPermission.deniedForever) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Location permissions are permanently denied, we cannot request permissions.')));
-        return;
-      }
+      if (permission == LocationPermission.deniedForever) return;
 
-      // Step 3: Get the current position.
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-
-      // Step 4: Animate the camera to the new position.
+      // 3. Get current position and animate the camera
+      Position position =
+      await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
       _mapController?.animateCamera(
         CameraUpdate.newCameraPosition(
           CameraPosition(
-            target: LatLng(position.latitude, position.longitude),
-            zoom: 15.0,
-          ),
+              target: LatLng(position.latitude, position.longitude),
+              zoom: 15.0),
         ),
       );
     } catch (e) {
@@ -90,12 +101,11 @@ class _MapScreenState extends State<MapScreen> {
           GoogleMap(
             initialCameraPosition: _initialPosition,
             onMapCreated: (controller) => _mapController = controller,
-            myLocationEnabled: true, // This will show the blue dot
-            myLocationButtonEnabled: false, // We use our own button
+            myLocationEnabled: true,
+            myLocationButtonEnabled: false,
             zoomControlsEnabled: false,
           ),
           const TopSearchBar(),
-          // MODIFIED: Added back the My Location button
           Positioned(
             bottom: 30,
             right: 20,
